@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Send repository_dispatch to Delta-43/workshops
         env:
-          TOKEN: ${{ secrets.WORKSHOPS_SYNC_TOKEN }}
+          TOKEN: ${{ secrets.WORKSHOP_SYNC_TOKEN }}
         run: |
           curl -sSf -X POST \
             -H "Accept: application/vnd.github+json" \
