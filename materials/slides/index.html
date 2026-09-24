@@ -222,7 +222,7 @@ const slides = [
       <Col n="03" title="Patience">It will break, repeatedly. That’s normal.</Col>
       <Col n="04" title="Persistence">Run → error → paste back → fix → re-run.</Col>
     </div>
-    <div className="note"><b>Note //</b> MEMORY.md, PLAN.md and AGENT.md are these four Ps, written down.</div>
+    <div className="note"><b>Note //</b> MEMORY.md, PLAN.md and AGENTS.md are these four Ps, written down.</div>
   </>)},
 
   { sec: "Primer", render: () => (<>
@@ -254,7 +254,7 @@ const slides = [
       {[
         ["bird-1-drop-print.png","T+00 · Outline","01","Web chat","Copy/paste, manual files, no AI execution."],
         ["bird-2-wireframe-print.png","T+01 · Wireframe","02","Editor + memory","PLAN.md / MEMORY.md, models via OpenRouter."],
-        ["bird-3-brake-print.png","T+02 · Signal","03","CLI agents","Full repo access, AGENT.md, MCP, parallel agents."],
+        ["bird-3-brake-print.png","T+02 · Signal","03","CLI agents","Full repo access, AGENTS.md, MCP, parallel agents."],
       ].map(([src,cap,n,t,d],i) => (
         <div key={n}>
           <Bird src={src} cap={cap} hero={i===2}/>
@@ -291,7 +291,7 @@ const slides = [
       tools={<><b>Tools //</b> Copilot CLI · Claude Code · Codex CLI · claude-code-router · MCP</>}
       bird="bird-3-brake-print.png" cap="T+02 · Signal" hero
       items={[
-        <><code>AGENT.md</code>: role, constraints, allowed commands, definition of done.</>,
+        <><code>AGENTS.md</code>: role, constraints, allowed commands, definition of done.</>,
         <>One agent plans → codes → runs → fixes, end to end.</>,
         <><strong>Parallel agents</strong>: one owns <code>backend/</code>, one owns <code>frontend/</code>.</>,
         <><strong>MCP servers</strong> add tools; the router picks models by cost and strength.</>,
@@ -343,7 +343,7 @@ const slides = [
       <tbody>
         <tr><td><span className="n">01</span>Web chat</td><td>Manual</td><td>None</td><td>You run everything</td></tr>
         <tr><td><span className="n">02</span>Editor</td><td>Assisted</td><td>MEMORY.md · PLAN.md</td><td>Assisted, reviewed</td></tr>
-        <tr><td><span className="n">03</span>CLI agents</td><td>Autonomous</td><td>AGENT.md · MCP</td><td>Direct, parallel</td></tr>
+        <tr><td><span className="n">03</span>CLI agents</td><td>Autonomous</td><td>AGENTS.md · MCP</td><td>Direct, parallel</td></tr>
       </tbody>
     </table>
   </>)},
