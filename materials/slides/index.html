@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Guided Coding — Workshop Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Single file, no build step: React + Babel from a CDN (pinned versions).
+     Visual system: "Field Telemetry", matched to POSTER.pdf and PROJECT-SPEC.pdf.
+     Keys: → / Space / PgDn next · ← / PgUp back · Home / End · F fullscreen.
+     The URL hash (#5) keeps your place on reload. -->
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --field:#0a0a0d; --ink:#f2f3f6; --soft:#c4c6ce; --muted:#7d808b;
+    --rule:#2c2e35; --grid:#16171c; --accent:#c8102e;
+    --display:"Anton",Impact,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+    --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;background:var(--field);color:var(--ink);font-family:var(--sans);overflow:hidden;}
+
+  /* Every slide is designed on a fixed 1600×900 stage and scaled to fit the screen,
+     so layout is identical on a laptop, a projector or a TV. */
+  .viewport{position:fixed;inset:0;}
+  .stage{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center;background:var(--field);}
+
+  /* outer viewfinder */
+  .vf{position:absolute;width:34px;height:34px;border-color:var(--rule);border-style:solid;border-width:0;}
+  .vf.tl{top:22px;left:22px;border-top-width:1px;border-left-width:1px;}
+  .vf.tr{top:22px;right:22px;border-top-width:1px;border-right-width:1px;}
+  .vf.bl{bottom:22px;left:22px;border-bottom-width:1px;border-left-width:1px;}
+  .vf.br{bottom:22px;right:22px;border-bottom-width:1px;border-right-width:1px;}
+
+  /* readout strip + footer */
+  .readout{position:absolute;top:44px;left:96px;right:96px;display:flex;justify-content:space-between;
+    font:500 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+    padding-bottom:12px;border-bottom:1px solid var(--rule);}
+  .readout b{color:var(--accent);font-weight:500;}
+  .foot{position:absolute;bottom:44px;left:96px;right:96px;display:flex;justify-content:space-between;align-items:center;
+    font:400 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .nav{display:flex;gap:14px;align-items:center;}
+  .nav button{all:unset;cursor:pointer;color:var(--ink);padding:2px 4px;}
+  .nav button:hover{color:var(--accent);}
+  .progress{position:absolute;top:0;left:0;height:4px;background:var(--accent);transition:width .25s ease;}
+
+  /* slide body area */
+  .body{position:absolute;top:120px;bottom:110px;left:96px;right:96px;display:flex;flex-direction:column;justify-content:center;}
+
+  /* type */
+  .tag{font:500 16px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;display:block;}
+  .tag .dim{color:var(--muted);}
+  h1,h2,h3{font-family:var(--display);font-weight:400;text-transform:uppercase;}
+  h2{font-size:88px;line-height:.95;letter-spacing:.005em;margin-bottom:44px;}
+  h2 .o{color:transparent;-webkit-text-stroke:1.6px var(--ink);}
+  h3{font-size:34px;line-height:1;letter-spacing:.01em;}
+  p,.lead{font-size:26px;line-height:1.45;color:var(--soft);}
+  .lead{max-width:1100px;}
+  .note{font:400 15px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:40px;}
+  .note b{color:var(--accent);font-weight:500;}
+  code{font-family:var(--mono);font-size:.86em;color:var(--ink);background:#15161b;border:1px solid var(--rule);padding:.05em .35em;}
+
+  /* rule-topped columns (same as the poster's level grid) */
+  .cols{display:grid;gap:48px;}
+  .col{border-top:1px solid var(--rule);position:relative;padding-top:26px;}
+  .col::before{content:"";position:absolute;top:-2px;left:0;width:64px;height:3px;background:var(--accent);}
+  .col .n{font:700 40px/1 var(--mono);color:var(--accent);margin-bottom:18px;}
+  .col h3{margin-bottom:14px;}
+  .col p{font-size:23px;}
+  .col .spec{font:400 13px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:18px;}
+
+  /* numbered list */
+  ol.steps{list-style:none;counter-reset:s;display:grid;gap:22px;}
+  ol.steps li{counter-increment:s;display:grid;grid-template-columns:72px 1fr;align-items:baseline;
+    font-size:27px;line-height:1.4;color:var(--soft);padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  ol.steps li:last-child{border-bottom:0;padding-bottom:0;}
+  ol.steps li::before{content:counter(s,decimal-leading-zero);font:700 22px/1 var(--mono);color:var(--accent);}
+  ol.steps li code{font-size:.8em;}
+  ol.steps li strong,p strong{color:var(--ink);font-weight:600;}
+
+  /* viewfinder frame for bird art */
+  figure.bird{position:relative;}
+  figure.bird img{position:absolute;inset:28px;width:calc(100% - 56px);height:calc(100% - 56px);object-fit:contain;}
+  .tick{position:absolute;width:22px;height:22px;border:0 solid var(--muted);}
+  .hero .tick{border-color:var(--accent);width:30px;height:30px;}
+  .tick.a{top:0;left:0;border-top-width:2px;border-left-width:2px;}
+  .tick.b{top:0;right:0;border-top-width:2px;border-right-width:2px;}
+  .tick.c{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px;}
+  .tick.d{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px;}
+  figcaption{position:absolute;bottom:-30px;left:0;font:400 13px/1 var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;}
+  .hero figcaption{color:var(--accent);}
+
+  /* level slides: copy left, bird right */
+  .split{display:grid;grid-template-columns:1fr 540px;gap:80px;align-items:center;height:100%;}
+  .split figure{height:540px;}
+  .tools{font:400 15px/1.5 var(--mono);letter-spacing:.04em;color:var(--muted);margin:-22px 0 28px;}
+  .split h2{font-size:80px;margin-bottom:36px;}
+  .split ol.steps{gap:16px;}
+  .split ol.steps li{font-size:24px;padding-bottom:16px;}
+  .split .note{margin-top:28px;}
+  .tools b{color:var(--ink);font-weight:500;}
+
+  /* crimson signal strip */
+  .strip{background:var(--accent);color:var(--field);display:flex;justify-content:space-between;align-items:center;
+    padding:18px 28px;margin-top:56px;}
+  .strip .big{font:400 40px/1 var(--display);letter-spacing:.06em;}
+  .strip .small{font:700 15px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;}
+
+  /* tables: horizontal rules only */
+  table{border-collapse:collapse;width:100%;}
+  th{font:500 14px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);text-align:left;
+    padding:0 24px 18px 0;border-bottom:1px solid var(--rule);}
+  td{font-size:24px;line-height:1.35;color:var(--soft);padding:24px 24px 24px 0;border-bottom:1px solid var(--rule);vertical-align:top;}
+  td:first-child{font:400 30px/1.1 var(--display);text-transform:uppercase;color:var(--ink);white-space:nowrap;}
+  td .n{font:700 20px/1 var(--mono);color:var(--accent);margin-right:14px;}
+
+  /* title slide */
+  .title{display:grid;grid-template-columns:1fr 520px;gap:40px;height:100%;align-items:center;}
+  .wordmark{font:400 250px/.93 var(--display);text-transform:uppercase;letter-spacing:-.005em;}
+  .wordmark span{display:block;}
+  .wordmark .o{color:transparent;-webkit-text-stroke:2.4px var(--ink);}
+  .infocol{border-left:3px solid var(--accent);padding-left:28px;margin-top:44px;display:flex;gap:56px;align-items:flex-end;}
+  .infocol .tags{font:500 16px/1.7 var(--mono);letter-spacing:.14em;color:var(--accent);}
+  .infocol .motto{font:400 40px/1.05 var(--display);letter-spacing:.03em;text-transform:uppercase;}
+  .infocol .motto em{font-style:normal;color:var(--accent);}
+  .title figure{height:600px;}
+
+  /* agenda birds */
+  .agenda figure{height:240px;margin-bottom:58px;}
+
+  /* end slide readout cells */
+  .cells{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:64px;}
+  .cell{padding:22px 28px;border-left:1px solid var(--rule);}
+  .cell:first-child{border-left:0;padding-left:0;}
+  .cell .k{font:400 13px/1 var(--mono);letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+  .cell .v{font:400 36px/1 var(--display);text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const A = "assets/";
+const Ticks = () => <>{["a","b","c","d"].map(k => <span key={k} className={"tick " + k}/>)}</>;
+const Bird = ({ src, cap, hero, style }) => (
+  <figure className={"bird" + (hero ? " hero" : "")} style={style}>
+    <Ticks/><img src={A + src} alt=""/>{cap && <figcaption>{cap}</figcaption>}
+  </figure>
+);
+const Col = ({ n, title, spec, children }) => (
+  <div className="col">
+    {n && <div className="n">{n}</div>}
+    {title && <h3>{title}</h3>}
+    <p>{children}</p>
+    {spec && <div className="spec">{spec}</div>}
+  </div>
+);
+const Level = ({ n, name, tools, bird, cap, hero, items, lesson }) => (
+  <div className="split">
+    <div>
+      <span className="tag">Level {n} <span className="dim">// {name}</span></span>
+      <h2>{name}</h2>
+      <div className="tools">{tools}</div>
+      <ol className="steps">{items.map((t, i) => <li key={i}><span>{t}</span></li>)}</ol>
+      <div className="note"><b>Lesson //</b> {lesson}</div>
+    </div>
+    <Bird src={bird} cap={cap} hero={hero}/>
+  </div>
+);
+
+const slides = [
+  { sec: "Intro", render: () => (
+    <div className="title">
+      <div>
+        <div className="wordmark"><span>Guided</span><span className="o">Coding</span></div>
+        <div className="infocol">
+          <div className="tags">[ WORKSHOP ]<br/>[ BUILD-ALONG ]</div>
+          <div className="motto">Code with more<br/>than just <em>vibes</em></div>
+        </div>
+      </div>
+      <Bird src="bird-3-brake-print.png" cap="T+02 · Signal" hero/>
+    </div>
+  )},
+
+  { sec: "The build", render: () => (<>
+    <span className="tag">The running example</span>
+    <h2>One tiny app. <span className="o">Built three times.</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"1fr 1fr"}}>
+      <Col n="01" title="Backend · Python / FastAPI" spec="1 endpoint · Open-Meteo · no API key">
+        One endpoint that looks up a city and returns the current weather as clean JSON.
+      </Col>
+      <Col n="02" title="Frontend · React" spec="Search box · weather card">
+        A city search box and a card showing temperature, condition and wind.
+      </Col>
+    </div>
+    <div className="note"><b>Why so small //</b> small enough to hold in your head, and to keep token usage low.</div>
+  </>)},
+
+  { sec: "Framing", render: () => (<>
+    <span className="tag">Two different “levels”</span>
+    <h2>Don’t mix them up</h2>
+    <div className="cols" style={{gridTemplateColumns:"1fr 1fr"}}>
+      <Col n="A" title="Tooling sophistication" spec="Today · the whole workshop">
+        How much control the AI has over your files and environment: chat → editor → CLI agent.
+      </Col>
+      <Col n="B" title="Product maturity" spec="Bonus · at the very end">
+        Prototype → MVP → production. A separate axis: any tool works at any stage.
+      </Col>
+    </div>
+  </>)},
+
+  { sec: "Mindset", render: () => (<>
+    <span className="tag">The mindset under every level</span>
+    <h2>The four <span className="o">Ps</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"repeat(4,1fr)",gap:40}}>
+      <Col n="01" title="Plan">Get the plan and folder structure before any code.</Col>
+      <Col n="02" title="Project-manage">You track progress. One file at a time.</Col>
+      <Col n="03" title="Patience">It will break, repeatedly. That’s normal.</Col>
+      <Col n="04" title="Persistence">Run → error → paste back → fix → re-run.</Col>
+    </div>
+    <div className="note"><b>Note //</b> MEMORY.md, PLAN.md and AGENT.md are these four Ps, written down.</div>
+  </>)},
+
+  { sec: "Primer", render: () => (<>
+    <span className="tag">Quick primer</span>
+    <h2>Tokens &amp; <span className="o">context windows</span></h2>
+    <ol className="steps" style={{maxWidth:1200}}>
+      <li><span>A <strong>token</strong> is a few characters. Your prompt, pasted files and the reply all cost tokens.</span></li>
+      <li><span>The <strong>context window</strong> is the model’s short-term memory. Exceed it and things get silently dropped.</span></li>
+      <li><span>That’s why the project is tiny, and why memory files inject only what’s needed.</span></li>
+    </ol>
+    <div className="note"><b>Takeaway //</b> smaller, well-scoped prompts are cheaper and more reliable.</div>
+  </>)},
+
+  { sec: "Debugging", render: () => (<>
+    <span className="tag">Practise this at every level</span>
+    <h2>The debugging <span className="o">loop</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"repeat(4,1fr)",gap:40}}>
+      <Col n="01" title="Run">Run the code.</Col>
+      <Col n="02" title="Copy">Copy the <strong>exact</strong> error: terminal or red squiggle.</Col>
+      <Col n="03" title="Paste">Paste it back and ask for a fix.</Col>
+      <Col n="04" title="Repeat">Re-run until it’s green, not red.</Col>
+    </div>
+    <div className="note"><b>Drill //</b> we’ll break something on purpose at each level.</div>
+  </>)},
+
+  { sec: "Agenda", render: () => (<div className="agenda">
+    <span className="tag">Agenda · same project, three ways</span>
+    <div className="cols" style={{gridTemplateColumns:"repeat(3,1fr)"}}>
+      {[
+        ["bird-1-drop-print.png","T+00 · Outline","01","Web chat","Copy/paste, manual files, no AI execution."],
+        ["bird-2-wireframe-print.png","T+01 · Wireframe","02","Editor + memory","PLAN.md / MEMORY.md, models via OpenRouter."],
+        ["bird-3-brake-print.png","T+02 · Signal","03","CLI agents","Full repo access, AGENT.md, MCP, parallel agents."],
+      ].map(([src,cap,n,t,d],i) => (
+        <div key={n}>
+          <Bird src={src} cap={cap} hero={i===2}/>
+          <Col n={n} title={t}>{d}</Col>
+        </div>
+      ))}
+    </div>
+    <div className="strip"><span className="big">HACKATHON EDITION</span><span className="small">Then: working as a team · live build sprint</span></div>
+  </div>)},
+
+  { sec: "Level 01", render: () => <Level n="01" name="Web chat"
+      tools={<><b>Tools //</b> ChatGPT · Claude.ai · Copilot Chat · a text editor · a terminal</>}
+      bird="bird-1-drop-print.png" cap="T+00 · Outline"
+      items={[
+        <>One well-scoped prompt with the full spec: <strong>plan first, no code yet</strong>.</>,
+        <>Ask for file contents <strong>one at a time</strong>; you create and paste them.</>,
+        <>Run it locally and practise the loop on a deliberate bug.</>,
+        <>Recover context in a fresh chat by pasting a combined <code>project.txt</code>.</>,
+      ]}
+      lesson="useful with zero tooling, but no memory and no execution." /> },
+
+  { sec: "Level 02", render: () => <Level n="02" name="Editor + memory"
+      tools={<><b>Tools //</b> VS Code · Copilot / Continue / Cline · OpenRouter key</>}
+      bird="bird-2-wireframe-print.png" cap="T+01 · Wireframe"
+      items={[
+        <><code>PLAN.md</code>: a living plan with steps and checkboxes.</>,
+        <><code>MEMORY.md</code>: durable facts, so you stop re-explaining.</>,
+        <>Route through <strong>OpenRouter</strong> and compare two models on one prompt.</>,
+        <>Review every proposed diff before accepting it.</>,
+      ]}
+      lesson="persistent context + model choice = faster, cheaper iteration." /> },
+
+  { sec: "Level 03", render: () => <Level n="03" name="CLI agents"
+      tools={<><b>Tools //</b> Copilot CLI · Claude Code · Codex CLI · claude-code-router · MCP</>}
+      bird="bird-3-brake-print.png" cap="T+02 · Signal" hero
+      items={[
+        <><code>AGENT.md</code>: role, constraints, allowed commands, definition of done.</>,
+        <>One agent plans → codes → runs → fixes, end to end.</>,
+        <><strong>Parallel agents</strong>: one owns <code>backend/</code>, one owns <code>frontend/</code>.</>,
+        <><strong>MCP servers</strong> add tools; the router picks models by cost and strength.</>,
+      ]}
+      lesson="more autonomy is not less responsibility. You architect and review." /> },
+
+  { sec: "Guardrails", render: () => (<>
+    <span className="tag">Level 03 · guardrails</span>
+    <h2>Autonomous, <span className="o">not unreviewed</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"repeat(4,1fr)",gap:40}}>
+      <Col n="01" title="Sandbox">Limit which commands and files an agent can touch.</Col>
+      <Col n="02" title="Review diffs">Read every change before it lands.</Col>
+      <Col n="03" title="No secrets">Never let an agent commit keys or credentials.</Col>
+      <Col n="04" title="Permissions">Confirm risky actions: deletes, pushes, installs.</Col>
+    </div>
+  </>)},
+
+  { sec: "Team", render: () => (<>
+    <span className="tag">Closing</span>
+    <h2>Working as a team <span className="o">with agents</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"repeat(4,1fr)",gap:40}}>
+      <Col n="01" title="Trackers"><code>TASKS.md</code> says who is doing what.</Col>
+      <Col n="02" title="Isolation">One folder or module per person or agent, one branch each.</Col>
+      <Col n="03" title="Pull requests">Every change, human or agent, is reviewed.</Col>
+      <Col n="04" title="CI">Lint, test, build on every PR. Failures are feedback.</Col>
+    </div>
+    <div className="note"><b>Demo //</b> an agent opens a PR, CI runs, we review, we merge.</div>
+  </>)},
+
+  { sec: "Beyond", render: () => (<>
+    <span className="tag">Beyond the workshop</span>
+    <h2>The other axis: <span className="o">maturity</span></h2>
+    <table>
+      <thead><tr><th>Stage</th><th>Typical tools</th><th>What matters most</th></tr></thead>
+      <tbody>
+        <tr><td>Prototype</td><td>Lovable, Bolt, or any level today</td><td>Speed. Disposable is fine.</td></tr>
+        <tr><td>MVP</td><td>Replit, Cursor, Level 02 / 03</td><td>A foundation you won’t rewrite.</td></tr>
+        <tr><td>Production</td><td>Level 03 + an experienced reviewer</td><td>Security review, deploy strategy, no blind pushes.</td></tr>
+      </tbody>
+    </table>
+    <div className="note"><b>Rule //</b> pick the tooling that fits how careful you need to be.</div>
+  </>)},
+
+  { sec: "Recap", render: () => (<>
+    <span className="tag">Recap</span>
+    <h2>Three levels, <span className="o">one app</span></h2>
+    <table>
+      <thead><tr><th>Level</th><th>Control</th><th>Memory</th><th>Execution</th></tr></thead>
+      <tbody>
+        <tr><td><span className="n">01</span>Web chat</td><td>Manual</td><td>None</td><td>You run everything</td></tr>
+        <tr><td><span className="n">02</span>Editor</td><td>Assisted</td><td>MEMORY.md · PLAN.md</td><td>Assisted, reviewed</td></tr>
+        <tr><td><span className="n">03</span>CLI agents</td><td>Autonomous</td><td>AGENT.md · MCP</td><td>Direct, parallel</td></tr>
+      </tbody>
+    </table>
+  </>)},
+
+  { sec: "Go", render: () => (<>
+    <span className="tag">// End transmission</span>
+    <div className="wordmark" style={{fontSize:220}}><span>Let’s</span><span className="o">build</span></div>
+    <div className="cells">
+      <div className="cell"><div className="k">Build</div><div className="v">Weather dashboard</div></div>
+      <div className="cell"><div className="k">Levels</div><div className="v">3</div></div>
+      <div className="cell"><div className="k">Brief</div><div className="v">PROJECT-SPEC.pdf</div></div>
+      <div className="cell"><div className="k">Tag</div><div className="v">#GuidedCoding</div></div>
+    </div>
+  </>)},
+];
+
+const pad = n => String(n).padStart(2, "0");
+const fromHash = () => {
+  const n = parseInt(location.hash.slice(1), 10);
+  return Number.isFinite(n) ? Math.min(Math.max(n - 1, 0), slides.length - 1) : 0;
+};
+
+function Deck() {
+  const [i, setI] = React.useState(fromHash);
+  const [scale, setScale] = React.useState(1);
+  const go = d => setI(v => Math.min(Math.max(v + d, 0), slides.length - 1));
+
+  React.useEffect(() => {
+    const fit = () => setScale(Math.min(innerWidth / 1600, innerHeight / 900));
+    fit(); addEventListener("resize", fit);
+    const onKey = e => {
+      if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); go(1); }
+      if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(-1); }
+      if (e.key === "Home") setI(0);
+      if (e.key === "End") setI(slides.length - 1);
+      if (e.key === "f" || e.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    };
+    const onHash = () => setI(fromHash());
+    addEventListener("keydown", onKey); addEventListener("hashchange", onHash);
+    return () => { removeEventListener("resize", fit); removeEventListener("keydown", onKey); removeEventListener("hashchange", onHash); };
+  }, []);
+  React.useEffect(() => { history.replaceState(null, "", "#" + (i + 1)); }, [i]);
+
+  const s = slides[i];
+  return (
+    <div className="viewport">
+      <div className="stage" style={{transform:`translate(-50%,-50%) scale(${scale})`}}>
+        <div className="progress" style={{width:`${((i + 1) / slides.length) * 100}%`}}/>
+        <span className="vf tl"/><span className="vf tr"/><span className="vf bl"/><span className="vf br"/>
+        <div className="readout">
+          <span>Ref. GC-2609 // Guided Coding</span>
+          <span><b>CH.{pad(i + 1)}</b> // {s.sec}</span>
+          <span>Outline → Wireframe → Signal</span>
+        </div>
+        <div className="body" key={i}>{s.render()}</div>
+        <div className="foot">
+          <span>Bring a laptop · Beginners welcome</span>
+          <div className="nav">
+            <button onClick={() => go(-1)} aria-label="Previous slide">[ ← ]</button>
+            <span>CH.{pad(i + 1)} / {pad(slides.length)}</span>
+            <button onClick={() => go(1)} aria-label="Next slide">[ → ]</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Deck/>);
+</script>
+</body>
+</html>
