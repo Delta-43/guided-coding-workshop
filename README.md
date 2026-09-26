@@ -49,6 +49,7 @@ The URL keeps the slide number (`index.html#8`), so reloading keeps your place.
 
 - The "Four Ps" mindset is adapted from Darren Coxon's *[The Four Ps of Vibe Coding](https://darrencoxon.substack.com/p/the-four-ps-of-vibe-coding)*.
 - The product-maturity ladder is adapted from FreshVanRoot's *[Levels of VibeCoding](https://freshvanroot.com/blog/levels-of-vibecoding/)*.
+- The prompt / context / harness slides draw on Caleb Writes Code's *[Agent Harness explained in 8min](https://youtu.be/1a1VXDdIyrk)*.
 - Weather data: [Open-Meteo](https://open-meteo.com).
 - Typefaces: [Anton](https://fonts.google.com/specimen/Anton) and [JetBrains Mono](https://www.jetbrains.com/lp/mono/) (SIL Open Font License), loaded from Google Fonts.
 

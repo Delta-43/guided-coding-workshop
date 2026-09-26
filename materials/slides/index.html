@@ -139,6 +139,15 @@
   .cell:first-child{border-left:0;padding-left:0;}
   .cell .k{font:400 13px/1 var(--mono);letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
   .cell .v{font:400 36px/1 var(--display);text-transform:uppercase;}
+
+  /* nested layers: prompt inside context inside harness */
+  .layers{display:grid;grid-template-columns:600px 1fr;gap:72px;align-items:center;}
+  .nest{border:1px solid var(--rule);padding:22px 26px 26px;position:relative;}
+  .nest > .k{font:500 14px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:flex;justify-content:space-between;}
+  .nest > .k b{color:var(--ink);font-weight:500;}
+  .nest.core{border-color:var(--accent);background:#15161b;}
+  .nest.core > .k b{color:var(--accent);}
+  .nest .inner{font:400 30px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;}
 </style>
 </head>
 <body>
@@ -234,6 +243,42 @@ const slides = [
       <li><span>That’s why the project is tiny, and why memory files inject only what’s needed.</span></li>
     </ol>
     <div className="note"><b>Takeaway //</b> smaller, well-scoped prompts are cheaper and more reliable.</div>
+  </>)},
+
+  { sec: "Layers", render: () => (<>
+    <span className="tag">Three words you’ll hear a lot</span>
+    <h2>Prompt, context, <span className="o">harness</span></h2>
+    <div className="layers">
+      <div className="nest">
+        <div className="k"><b>03 · Harness</b><span>the world it works in</span></div>
+        <div className="nest">
+          <div className="k"><b>02 · Context</b><span>what it can see</span></div>
+          <div className="nest core">
+            <div className="k"><b>01 · Prompt</b><span>what you ask</span></div>
+            <div className="inner">“Build the weather endpoint”</div>
+          </div>
+        </div>
+      </div>
+      <ol className="steps">
+        <li><span><strong>Prompt engineering:</strong> the words. Role, task, constraints, in one message.</span></li>
+        <li><span><strong>Context engineering:</strong> what gets loaded around the prompt. Files read by tools, MCP, docs, <code>MEMORY.md</code>.</span></li>
+        <li><span><strong>Harness engineering:</strong> the environment and loop. Tools, permissions, tests, and a fresh start for each task.</span></li>
+      </ol>
+    </div>
+    <div className="note"><b>Today //</b> Level 01 = prompt · Level 02 adds context · Level 03 adds a harness. Outer layers need the inner ones.</div>
+  </>)},
+
+  { sec: "Harness", render: () => (<>
+    <span className="tag">Why harnesses won · long tasks</span>
+    <h2>The harness <span className="o">loop</span></h2>
+    <div className="cols" style={{gridTemplateColumns:"repeat(4,1fr)",gap:40}}>
+      <Col n="01" title="Spec">Write the requirements and a task list first: <code>PLAN.md</code>, <code>TASKS.md</code>.</Col>
+      <Col n="02" title="Pick one">A fresh agent session takes <strong>one</strong> unticked task. Nothing else.</Col>
+      <Col n="03" title="Build + test">Implement it, run it, and prove it works.</Col>
+      <Col n="04" title="Record">Tick the task, note what was learned, commit. Then loop.</Col>
+    </div>
+    <p style={{marginTop:48,maxWidth:1250}}>One endless chat has to <strong>summarise itself</strong> as it fills up, and can forget that half a feature was never finished. A loop re-reads the plan with a clean context every time.</p>
+    <div className="note"><b>Source //</b> Caleb Writes Code, “Agent Harness explained in 8min” (2026) · e.g. the “Ralph” loop</div>
   </>)},
 
   { sec: "Debugging", render: () => (<>
