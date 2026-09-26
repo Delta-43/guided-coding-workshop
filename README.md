@@ -15,22 +15,26 @@ The habits underneath all three levels matter as much as the tools: plan before 
 ## What's in here
 
 ```
+PROJECT-SPEC.pdf       Participant handout: get-ready guide, spec, step-by-step levels, prompts, fixes
+POSTER.pdf             Event poster (A4)
+SLIDES.html            Shortcut: opens the slide deck
 materials/
-├── PROJECT-SPEC.pdf   Participant handout: get-ready guide, spec, step-by-step levels, prompts, fixes
-├── POSTER.pdf         Event poster (A4)
+├── FREE-AGENT-SETUP.pdf  Side guide: a free AI coding agent (Kilo Code, Cline or Cursor Hobby + OpenRouter free models)
 └── slides/            Slide deck: open index.html in a browser
 live/                  The app as built live during the workshop, one folder per level
 ```
 
 ## Participants: start here
 
-1. Open **[`materials/PROJECT-SPEC.pdf`](materials/PROJECT-SPEC.pdf)** and work through **Section 00 – Get ready** *before* the workshop (30–45 minutes). It covers Windows (WSL2 + Ubuntu), Linux and macOS, VS Code, Python, Node.js, and the accounts you'll need.
+1. Open **[`PROJECT-SPEC.pdf`](PROJECT-SPEC.pdf)** and work through **Section 00 – Get ready** *before* the workshop (30–45 minutes). It covers Windows (WSL2 + Ubuntu), Linux and macOS, VS Code, Python, Node.js, and the accounts you'll need.
 2. On the day, follow Sections 01–05. Build in your own `~/guided-coding` folder, as the handout describes. You don't need to clone this repo to take part.
 3. Want to compare against the instructor's version afterwards? Look in [`live/`](live/).
 
+No paid AI plan yet? **[`materials/FREE-AGENT-SETUP.pdf`](materials/FREE-AGENT-SETUP.pdf)** sets up a free coding agent (Kilo Code, Cline or Cursor's free plan, with OpenRouter's free models) that you can use for Levels 2 and 3.
+
 ## Presenting the slides
 
-Open `materials/slides/index.html` in a browser; it needs an internet connection the first time (React and the fonts load from a CDN). There's no build step.
+Open `SLIDES.html` (or `materials/slides/index.html`) in a browser; it needs an internet connection the first time (React and the fonts load from a CDN). There's no build step.
 
 | Key | Action |
 |---|---|

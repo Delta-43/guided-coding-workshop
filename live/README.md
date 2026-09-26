@@ -1,6 +1,6 @@
 # Live build
 
-The Weather Dashboard as it gets built during the workshop, one folder per level. The layout follows Section 1.3 of the [handout](../materials/PROJECT-SPEC.pdf):
+The Weather Dashboard as it gets built during the workshop, one folder per level. The layout follows Section 1.3 of the [handout](../PROJECT-SPEC.pdf):
 
 ```
 live/
