@@ -58,7 +58,8 @@ The URL keeps the slide number (`index.html#8`), so reloading keeps your place.
 
 ## License
 
-- **Workshop materials** (everything except `live/`): [CC BY-NC 4.0](LICENSE). You're welcome to reuse and adapt them for non-commercial workshops, with credit.
+- **Workshop materials** (everything except `live/` and `output/`): [CC BY-NC 4.0](LICENSE). You're welcome to reuse and adapt them for non-commercial workshops, with credit.
 - **Code in `live/`**: [MIT](live/LICENSE).
+- **Showcase in `output/`**: [MIT](output/LICENSE).
 
 Part of [Delta-43/workshops](https://github.com/Delta-43/workshops).

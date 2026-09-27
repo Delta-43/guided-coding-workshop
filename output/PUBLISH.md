@@ -9,7 +9,7 @@ You are publishing the Weather Dashboard showcase of the repo `Delta-43/guided-c
 ## Context
 
 - Remotes: `origin` = GitHub (public, SSH). `gitea` = my Gitea at `https://gitea.dchaudhury.com/delta-43/guided-coding-workshop.git` (backup + instructor kit).
-- Branches: `main` (GitHub and Gitea), `showcase` (GitHub only: adds `output/index.html`, `output/README.md`, this `output/PUBLISH.md`, `.github/workflows/pages.yml`, and a README link), `ready` (**Gitea only**, the instructor kit).
+- Branches: `main` (GitHub and Gitea), `showcase` (GitHub only: adds `output/index.html`, `output/README.md`, `output/LICENSE` (MIT), this `output/PUBLISH.md`, `.github/workflows/pages.yml`, and README changes: the live link and the license line), `ready` (**Gitea only**, the instructor kit).
 - `output/index.html` is fully static: it calls Open-Meteo and the AWS terrain tiles from the browser. `.github/workflows/pages.yml` deploys it to Pages on pushes to `main`.
 - Live URL: `https://delta-43.github.io/guided-coding-workshop/`
 

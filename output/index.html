@@ -126,10 +126,40 @@ async function getJSON(url) {
   return res.json();
 }
 
-async function getForecast(city) {
+async function geocode(city) {
   const geo = await getJSON(`${GEOCODING_URL}?${new URLSearchParams({ name: city, count: 1 })}`);
   const place = geo.results && geo.results[0];
   if (!place) throw new Error(`City '${city}' not found`);
+  return place;
+}
+
+// ---- Default city: where the viewer is ------------------------------------------
+// The browser asks permission; the forecast and terrain use the exact coordinates and
+// BigDataCloud's free client-side reverse geocoder supplies the place name.
+const REVERSE_URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
+
+function locate() {
+  return new Promise((ok, fail) => {
+    if (!navigator.geolocation) return fail(new Error("Geolocation unavailable"));
+    navigator.geolocation.getCurrentPosition(p => ok(p.coords), fail, { timeout: 10000, maximumAge: 600000 });
+  });
+}
+
+async function hereAsPlace() {
+  const { latitude, longitude } = await locate();
+  const place = { name: "Your location", country: "", admin1: "", latitude, longitude, located: true };
+  try {
+    const r = await getJSON(`${REVERSE_URL}?${new URLSearchParams({ latitude, longitude, localityLanguage: "en" })}`);
+    place.name = r.city || r.locality || place.name;
+    place.country = r.countryName || "";
+    place.admin1 = r.principalSubdivision || "";
+  } catch { /* no name: keep "Your location", the weather still works */ }
+  return place;
+}
+
+const getForecast = async city => forecastFor(await geocode(city));
+
+async function forecastFor(place) {
   const data = await getJSON(`${FORECAST_URL}?${new URLSearchParams({
     latitude: place.latitude, longitude: place.longitude,
     current: "temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day",
@@ -150,7 +180,7 @@ async function getForecast(city) {
   }));
   const [condition, icon] = describe(current.weather_code);
   return {
-    city: place.name, country: place.country || "", region: place.admin1 || "",
+    city: place.name, country: place.country || "", region: place.admin1 || "", located: !!place.located,
     latitude: place.latitude, longitude: place.longitude,
     timezone: data.timezone || "", local_time: current.time, is_day: !!current.is_day,
     current: {
@@ -325,20 +355,25 @@ function App() {
   const [loading, setLoading] = React.useState(false);
   const [unit, setUnit] = React.useState("C");
 
-  async function load(name) {
-    if (!name.trim()) return;
+  // query: a city name typed or clicked, or a place object from hereAsPlace()
+  async function load(query) {
+    if (typeof query === "string" && !query.trim()) return;
     setLoading(true); setError("");
     try {
-      const body = await getForecast(name.trim());
+      const body = typeof query === "string" ? await getForecast(query.trim()) : await forecastFor(query);
       setData(body); setCity(body.city);
       // shareable link: ?city=Tokyo opens straight on that city
-      history.replaceState(null, "", `?city=${encodeURIComponent(body.city)}`);
+      if (!(body.located && body.city === "Your location")) history.replaceState(null, "", `?city=${encodeURIComponent(body.city)}`);
     } catch (err) {
       setError(err instanceof TypeError ? "Can't reach the weather service. Are you online?" : err.message);
     } finally { setLoading(false); }
   }
 
-  React.useEffect(() => { load(new URLSearchParams(location.search).get("city") || "Paris"); }, []);
+  React.useEffect(() => {
+    const shared = new URLSearchParams(location.search).get("city");
+    if (shared) load(shared);                                   // a ?city= link wins
+    else hereAsPlace().then(load, () => load("Paris"));         // else where you are; Paris if declined
+  }, []);
   const c = data && data.current;
 
   return (
