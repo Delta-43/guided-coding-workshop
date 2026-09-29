@@ -23,7 +23,7 @@ SLIDES.html            Shortcut: opens the slide deck
 materials/
 ├── FREE-AGENT-SETUP.pdf  Side guide: a free AI coding agent (Kilo Code, Cline or Cursor Hobby + OpenRouter free models)
 └── slides/            Slide deck: open index.html in a browser
-live/                  The app as built live during the workshop, one folder per level
+live/                  The app built live during the workshop (level 2 only; see the note in live/README.md)
 output/                The finished showcase dashboard (static, published on GitHub Pages)
 ```
 

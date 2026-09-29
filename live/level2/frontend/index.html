@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f4ec">
+    <title>Weather Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">◒</span> Weather Desk</div>
+        <span class="topbar-note">CURRENT CONDITIONS <span class="live-dot" aria-hidden="true"></span></span>
+      </header>
+
+      <main>
+        <section class="search-area" aria-labelledby="heading">
+          <div class="eyebrow">THE WEATHER, AT A GLANCE <span aria-hidden="true">↗</span></div>
+          <h1 id="heading">What's it like<br>out there<span class="accent">?</span></h1>
+          <form id="search-form" class="search-form" role="search">
+            <label for="city">Look up a city</label>
+            <div class="search-row">
+              <input id="city" name="city" type="search" placeholder="City name" autocomplete="off" required maxlength="100">
+              <button id="search-button" type="submit"><span class="button-label">Check weather</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+            </div>
+          </form>
+        </section>
+
+        <section class="results" aria-live="polite" aria-atomic="true">
+          <div id="status" class="status" role="status"><span class="status-mark" aria-hidden="true">+</span><span id="status-text">Enter a city to see the latest conditions.</span></div>
+          <article id="weather" class="weather" aria-labelledby="place" tabindex="-1" hidden>
+            <div class="weather-head">
+              <div><p class="field-label">RIGHT NOW IN</p><h2 id="place"></h2><p id="observed" class="observed"></p></div>
+              <span id="icon" class="weather-icon" aria-hidden="true"></span>
+            </div>
+            <div class="temperature-row"><span id="temperature" class="temperature"></span><span class="degree">°C</span></div>
+            <p id="condition" class="condition"></p>
+            <div class="metrics">
+              <div><span class="field-label">FEELS LIKE</span><strong id="feels-like"></strong></div>
+              <div><span class="field-label">HUMIDITY</span><strong id="humidity"></strong></div>
+              <div><span class="field-label">WIND</span><strong id="wind"></strong></div>
+            </div>
+          </article>
+        </section>
+      </main>
+
+      <footer><span>WEATHER DESK / 01</span><span>Data by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo ↗</a></span></footer>
+    </div>
+  </body>
+</html>
