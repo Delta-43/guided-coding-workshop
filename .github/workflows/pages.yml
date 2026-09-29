@@ -1,0 +1,35 @@
+name: Publish showcase to GitHub Pages
+
+# Deploys output/index.html (the static Weather Dashboard) to
+# https://delta-43.github.io/guided-coding-workshop/ whenever it changes on main.
+on:
+  push:
+    branches: [main]
+    paths: ["output/index.html", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      # Publish only the page itself, not the Markdown notes next to it
+      - run: mkdir _site && cp output/index.html _site/
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v5

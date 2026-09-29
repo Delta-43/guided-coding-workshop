@@ -8,6 +8,8 @@
 | 02 | **Editor + memory** | The AI lives in VS Code; `PLAN.md` and `MEMORY.md` give it a memory; OpenRouter lets you switch models. |
 | 03 | **CLI agents** | An agent in the terminal reads and writes files and runs commands, guided by `AGENTS.md`. |
 
+**Live showcase:** [delta-43.github.io/guided-coding-workshop](https://delta-43.github.io/guided-coding-workshop/). This is where the app can go: search any city for its weather, a 24-hour chart, a 7-day outlook, and a live contour map of the terrain.
+
 The app is a **Weather Dashboard**: a Python (FastAPI) backend that fetches current weather from [Open-Meteo](https://open-meteo.com) (free, no API key), and a single-page React frontend with a search box and a result card.
 
 The habits underneath all three levels matter as much as the tools: plan before code, one file at a time, and the debugging loop (run → copy the exact error → paste it back → re-run).
@@ -22,6 +24,7 @@ materials/
 ├── FREE-AGENT-SETUP.pdf  Side guide: a free AI coding agent (Kilo Code, Cline or Cursor Hobby + OpenRouter free models)
 └── slides/            Slide deck: open index.html in a browser
 live/                  The app as built live during the workshop, one folder per level
+output/                The finished showcase dashboard (static, published on GitHub Pages)
 ```
 
 ## Participants: start here
@@ -55,7 +58,8 @@ The URL keeps the slide number (`index.html#8`), so reloading keeps your place.
 
 ## License
 
-- **Workshop materials** (everything except `live/`): [CC BY-NC 4.0](LICENSE). You're welcome to reuse and adapt them for non-commercial workshops, with credit.
+- **Workshop materials** (everything except `live/` and `output/`): [CC BY-NC 4.0](LICENSE). You're welcome to reuse and adapt them for non-commercial workshops, with credit.
 - **Code in `live/`**: [MIT](live/LICENSE).
+- **Showcase in `output/`**: [MIT](output/LICENSE).
 
 Part of [Delta-43/workshops](https://github.com/Delta-43/workshops).
