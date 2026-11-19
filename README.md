@@ -1,5 +1,12 @@
 # Guided Coding Workshop
 
+[![Live showcase](https://img.shields.io/badge/showcase-Weather%20Dashboard-1f6feb?style=flat)](https://delta-43.github.io/guided-coding-workshop/)
+[![Materials: CC BY-NC 4.0](https://img.shields.io/badge/materials-CC%20BY--NC%204.0-lightgrey)](LICENSE)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-green)](live/LICENSE)
+![Python](https://img.shields.io/badge/backend-Python%20%2B%20FastAPI-3776ab)
+![React](https://img.shields.io/badge/frontend-React-087ea4)
+![Open-Meteo](https://img.shields.io/badge/data-Open--Meteo-ff8c00)
+
 **Code with more than just vibes.** This hands-on workshop builds one tiny full-stack app three times, each time with a more capable kind of AI assistance:
 
 | Level | Workflow | What changes |
